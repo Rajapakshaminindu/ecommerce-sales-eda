@@ -1,0 +1,13 @@
+order_id,customer,category,region,quantity,unit_price,discount,order_date,revenue
+1001,Alice,Electronics,North,2,800,0.1,2025-01-05,1440.0
+1002,Bob,Accessories,South,5,25,0.0,2025-01-06,125.0
+1003,Charlie,Office,North,3,60,0.05,2025-01-07,171.0
+1004,Diana,Electronics,East,1,800,0.15,2025-01-09,680.0
+1005,Edward,Home,West,2,120,0.0,2025-01-11,240.0
+1006,Fatima,Accessories,East,4,25,0.1,2025-01-12,90.0
+1007,George,Office,South,2,60,0.0,2025-01-14,120.0
+1008,Hannah,Home,North,1,120,0.0,2025-01-15,120.0
+1009,Ivan,Electronics,West,3,800,0.05,2025-01-18,2280.0
+1010,Julia,Accessories,North,6,25,0.0,2025-01-19,150.0
+1012,Laura,Home,South,1,120,0.0,2025-01-23,120.0
+1013,Maya,Electronics,North,1,800,0.0,2025-01-25,800.0

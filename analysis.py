@@ -1,0 +1,82 @@
+import sqlite3
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+BASE_DIR = Path(__file__).parent
+RAW_FILE = BASE_DIR / "orders.csv"
+
+# Extract: load the raw CSV file.
+orders = pd.read_csv(RAW_FILE)
+print("Raw rows:", len(orders))
+print("\nMissing values before cleaning:")
+print(orders.isna().sum())
+
+# Transform: remove duplicate orders and clean required fields.
+orders = orders.drop_duplicates(subset="order_id").copy()
+orders["quantity"] = pd.to_numeric(orders["quantity"], errors="coerce")
+orders["unit_price"] = pd.to_numeric(orders["unit_price"], errors="coerce")
+orders["discount"] = pd.to_numeric(orders["discount"], errors="coerce").fillna(0)
+orders["order_date"] = pd.to_datetime(orders["order_date"], errors="coerce")
+orders = orders.dropna(subset=["customer", "category", "region", "quantity", "unit_price", "order_date"])
+orders["revenue"] = orders["quantity"] * orders["unit_price"] * (1 - orders["discount"])
+
+# Load: save the cleaned data for reuse.
+clean_file = BASE_DIR / "clean_orders.csv"
+orders.to_csv(clean_file, index=False)
+
+# SQL analysis: use SQLite to answer business questions.
+connection = sqlite3.connect(":memory:")
+orders.to_sql("orders", connection, index=False)
+
+category_sql = """
+SELECT category, ROUND(SUM(revenue), 2) AS total_revenue,
+       SUM(quantity) AS units_sold
+FROM orders
+GROUP BY category
+ORDER BY total_revenue DESC;
+"""
+region_sql = """
+SELECT region, ROUND(SUM(revenue), 2) AS total_revenue
+FROM orders
+GROUP BY region
+ORDER BY total_revenue DESC;
+"""
+
+category_summary = pd.read_sql_query(category_sql, connection)
+region_summary = pd.read_sql_query(region_sql, connection)
+
+print("\nClean rows:", len(orders))
+print("Average order value:", round(orders["revenue"].mean(), 2))
+print("\nRevenue by category:")
+print(category_summary)
+print("\nRevenue by region:")
+print(region_summary)
+
+category_summary.to_csv(BASE_DIR / "category_summary.csv", index=False)
+region_summary.to_csv(BASE_DIR / "region_summary.csv", index=False)
+
+# EDA: create charts that make the summaries easy to compare.
+plt.figure(figsize=(7, 4))
+plt.bar(category_summary["category"], category_summary["total_revenue"])
+plt.title("Revenue by Category")
+plt.xlabel("Category")
+plt.ylabel("Revenue")
+plt.xticks(rotation=20)
+plt.tight_layout()
+plt.savefig(BASE_DIR / "revenue_by_category.png")
+plt.close()
+
+plt.figure(figsize=(7, 4))
+plt.bar(region_summary["region"], region_summary["total_revenue"], color="darkorange")
+plt.title("Revenue by Region")
+plt.xlabel("Region")
+plt.ylabel("Revenue")
+plt.tight_layout()
+plt.savefig(BASE_DIR / "revenue_by_region.png")
+plt.close()
+
+connection.close()
+print("\nCreated: clean_orders.csv, category_summary.csv, region_summary.csv")
+print("Created: revenue_by_category.png, revenue_by_region.png")
