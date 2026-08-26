@@ -30,25 +30,20 @@ orders.to_csv(clean_file, index=False)
 connection = sqlite3.connect(":memory:")
 orders.to_sql("orders", connection, index=False)
 
-category_sql = """
-SELECT category, ROUND(SUM(revenue), 2) AS total_revenue,
-       SUM(quantity) AS units_sold
-FROM orders
-GROUP BY category
-ORDER BY total_revenue DESC;
-"""
-region_sql = """
-SELECT region, ROUND(SUM(revenue), 2) AS total_revenue
-FROM orders
-GROUP BY region
-ORDER BY total_revenue DESC;
-"""
+queries_file = BASE_DIR / "queries.sql"
+sql_text = queries_file.read_text(encoding="utf-8")
+queries = [
+    query.strip()
+    for query in sql_text.split(";")
+    if "SELECT" in query.upper()
+]
 
-category_summary = pd.read_sql_query(category_sql, connection)
-region_summary = pd.read_sql_query(region_sql, connection)
+category_summary = pd.read_sql_query(queries[0], connection)
+region_summary = pd.read_sql_query(queries[1], connection)
+average_order_value = pd.read_sql_query(queries[2], connection)
 
 print("\nClean rows:", len(orders))
-print("Average order value:", round(orders["revenue"].mean(), 2))
+print("Average order value:", average_order_value.loc[0, "average_order_value"])
 print("\nRevenue by category:")
 print(category_summary)
 print("\nRevenue by region:")
