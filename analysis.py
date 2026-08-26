@@ -64,7 +64,7 @@ plt.savefig(BASE_DIR / "revenue_by_category.png")
 plt.close()
 
 plt.figure(figsize=(7, 4))
-plt.bar(region_summary["region"], region_summary["total_revenue"], color="darkorange")
+plt.bar(region_summary["region"], region_summary["total_revenue"], color="yellow")
 plt.title("Revenue by Region")
 plt.xlabel("Region")
 plt.ylabel("Revenue")
