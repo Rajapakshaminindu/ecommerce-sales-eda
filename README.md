@@ -30,6 +30,7 @@ If your Python command is not `python`, use the full interpreter command configu
 ## Files
 - `orders.csv` - raw input data
 - `analysis.py` - cleaning, SQL, and EDA pipeline
+- `classification.py` - beginner machine-learning classification example
 - `queries.sql` - SQL questions used in the analysis
 - `requirements.txt` - external Python libraries
 - generated CSV files - cleaned data and summaries
@@ -44,3 +45,4 @@ If your Python command is not `python`, use the full interpreter command configu
 - SQL `GROUP BY`, `SUM`, `AVG`, and `ORDER BY`
 - business-focused EDA
 - Matplotlib charts
+- decision-tree classification
