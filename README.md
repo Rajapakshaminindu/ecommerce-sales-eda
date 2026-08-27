@@ -31,7 +31,7 @@ If your Python command is not `python`, use the full interpreter command configu
 - `orders.csv` - raw input data
 - `analysis.py` - cleaning, SQL, and EDA pipeline
 - `queries.sql` - SQL questions used in the analysis
-- `requirements.txt` - external Python packages
+- `requirements.txt` - external Python libraries
 - generated CSV files - cleaned data and summaries
 - generated PNG files - EDA charts
 
