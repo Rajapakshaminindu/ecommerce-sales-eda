@@ -37,6 +37,7 @@ If your Python command is not `python`, use the full interpreter command configu
 
 ## Skills demonstrated
 - Pandas DataFrames
+- Data Cleansing
 - missing-value handling
 - duplicate removal
 - feature creation
